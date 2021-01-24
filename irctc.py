@@ -10,9 +10,27 @@ class IRCTC:
         if user_input=="1":
            self.live_status()
         elif user_input =="2":
-            print("pnr")
+            self.pnr()
         else:
             self.train_schedule()
+   
+   
+    def pnr(self):
+        pnr_no=input("enter the pnr no.")
+        self.fetch_result(pnr_no)
+
+    def fetch_result(self,pnr_no):
+        data=requests.get("https://indianrailapi.com/api/v2/PNRCheck/apikey/9485fe667278d32f90d3337b8e025db0/PNRNumber/{}".format(pnr_no))
+        data=data.json()
+        print(data['Passangers'])
+        
+        
+        for i in data['Passangers']:
+            print(i['passanger'],"|",i["Booking_status"],"|",i["current_status"],"|")
+
+
+
+   
     def live_status(self):
         train_no=input("enter the train no")
         year=input("enter the year")
@@ -20,6 +38,8 @@ class IRCTC:
         day=input("enter the day")
         hello=year+month+day
         self.fetch_traindata(train_no,hello)
+ 
+    
 
     def fetch_traindata(self,train_no,hello):
         data=requests.get("https://indianrailapi.com/api/v2/livetrainstatus/apikey/9485fe667278d32f90d3337b8e025db0/trainnumber/{}/date/{}".format(train_no,hello))    
